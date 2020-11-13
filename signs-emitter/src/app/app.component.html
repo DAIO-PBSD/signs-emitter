@@ -1,0 +1,30 @@
+<router-outlet></router-outlet>
+<div class="container mt-3">
+  <div class="row">
+    <label>
+      Patient ID:
+      <input type="text" [formControl]="id" class="mr-1">
+    </label>
+  </div>
+  <div class="row">
+    <label>
+      Sign Type (eg: Heartrate):
+      <input type="text" [formControl]="type" class="mr-1">
+    </label>
+  </div>
+  <div class="row">
+    <label>
+      Extremes:
+    </label>
+  </div>
+  <div class="row">
+    <input type="number" [formControl]="extremelyLow" class="mr-1 bg-danger">
+    <input type="number" [formControl]="low" class="mr-1 bg-warning">
+    <input type="number" [formControl]="high" class="mr-1 bg-warning">
+    <input type="number" [formControl]="extremelyHigh" class="mr-1 bg-danger">
+  </div>
+  <div class="row">
+    <button type="button" *ngIf="!emitting" class="btn btn-success" (click)="emit()">Emit</button>
+    <button type="button" *ngIf="emitting" class="btn btn-danger" (click)="stop()">Stop</button>
+  </div>
+</div>
