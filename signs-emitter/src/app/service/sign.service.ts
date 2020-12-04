@@ -20,6 +20,6 @@ export class SignService {
   diagnosticURL = "http://ec2-3-17-180-185.us-east-2.compute.amazonaws.com:8080/reads"
 
   sendSign(read: Read) {
-    this.http.post(this.diagnosticURL, read, httpOptions)
+    this.http.post(this.diagnosticURL, read, httpOptions).subscribe(con => con)
   }
 }
