@@ -17,10 +17,9 @@ export class SignService {
 
   constructor(private http: HttpClient) { }
 
-  diagnosticURL = "http://localhost:8080/reads"
+  diagnosticURL = "http://ec2-3-17-180-185.us-east-2.compute.amazonaws.com:8080/reads"
 
   sendSign(read: Read) {
-    console.log(read)
-    this.http.post(this.diagnosticURL, read, httpOptions).subscribe(sub => console.log(sub))
+    this.http.post(this.diagnosticURL, read, httpOptions)
   }
 }
