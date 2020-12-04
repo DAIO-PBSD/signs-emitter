@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Sign } from './model/sign';
+import { Read } from './model/read';
 import { SignService } from './service/sign.service';
 
 @Component({
@@ -11,14 +11,16 @@ import { SignService } from './service/sign.service';
 export class AppComponent {
   title = 'signs-emitter'
 
-  emitting = false
+  emitting: String = null
 
   id = new FormControl('')
-  type = new FormControl('')
+  signName = new FormControl('')
   low = new FormControl('')
   extremelyLow = new FormControl('')
   high = new FormControl('')
   extremelyHigh = new FormControl('')
+
+  delayTime = new FormControl('')
 
   constructor(private signService: SignService) {}
 
@@ -26,51 +28,70 @@ export class AppComponent {
     return Math.random() * (h - l) + l
   }
 
-  async emit() {
-    this.emitting = true
+  async emitNormal() {
+    this.emitting = "normal"
     let patientID = this.id.value
-    let signType = this.type.value
-    let eL = parseInt(this.extremelyLow.value)
+    let signType = this.signName.value
     let mL = parseInt(this.low.value)
     let mH = parseInt(this.high.value)
-    let eH = parseInt(this.extremelyHigh.value)
-    while (this.emitting) {
-      let random = Math.random()
-      let value: number
-      let danger: number
-      if (random < 0.05) {
-        value = this.randomRange(0, eL)
-        danger = 2
-      }
-      else if (random < 0.15) {
-        value = this.randomRange(eL, mL)
-        danger = 1
-      }
-      else if (random < 0.85) {
-        value = this.randomRange(mL, mH)
-        danger = 0
-      }
-      else if (random < 0.95) {
-        value = this.randomRange(mH, eH)
-        danger = 1
-      }
-      else {
-        value = this.randomRange(eH, 2*eH)
-        danger = 2
-      }
+    while (this.emitting == "normal") {
+      let value: number = this.randomRange(mL + 0.0001, mH)
 
-      let sign = new Sign(signType, new Date(), patientID, value, danger)
+      let sign = new Read(signType, new Date(), patientID, value)
       this.signService.sendSign(sign)
 
-      await this.delay(1000)
+      await this.delay()
     }
   }
 
-  stop() {
-    this.emitting = false
+  async emitWarning() {
+    this.emitting = "warning"
+    let patientID = this.id.value
+    let signType = this.signName.value
+    let mH = parseInt(this.high.value)
+    let eH = parseInt(this.extremelyHigh.value)
+    while (this.emitting == "warning") {
+      let value: number = this.randomRange(mH, eH)
+
+      let sign = new Read(signType, new Date(), patientID, value)
+      this.signService.sendSign(sign)
+
+      await this.delay()
+    }
   }
 
-  delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
+  async emitDanger() {
+    this.emitting = "danger"
+    let patientID = this.id.value
+    let signType = this.signName.value
+    let eH = parseInt(this.extremelyHigh.value)
+    while (this.emitting == "danger") {
+      let value: number = this.randomRange(eH, 2*eH)
+
+      let sign = new Read(signType, new Date(), patientID, value)
+      this.signService.sendSign(sign)
+
+      await this.delay()
+    }
+  }
+
+  stopNormal() {
+    if (this.emitting == "normal")
+      this.emitting = null
+  }
+
+  stopWarning() {
+    if (this.emitting == "warning")
+      this.emitting = null
+  }
+
+  stopDanger() {
+    if (this.emitting == "danger")
+      this.emitting = null
+  }
+
+  delay() {
+    let delayMs = this.delayTime.value * 1000
+    return new Promise( resolve => setTimeout(resolve, delayMs) );
   }
 }

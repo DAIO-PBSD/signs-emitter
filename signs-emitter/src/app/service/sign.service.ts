@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Sign } from '../model/sign';
+import { Read } from '../model/read';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
@@ -17,10 +17,10 @@ export class SignService {
 
   constructor(private http: HttpClient) { }
 
-  diagnosticURL = "http://localhost:8080/signs"
+  diagnosticURL = "http://localhost:8080/reads"
 
-  sendSign(sign: Sign) {
-    console.log(sign)
-    this.http.post(this.diagnosticURL, sign, httpOptions).subscribe(sub => console.log(sub))
+  sendSign(read: Read) {
+    console.log(read)
+    this.http.post(this.diagnosticURL, read, httpOptions).subscribe(sub => console.log(sub))
   }
 }
